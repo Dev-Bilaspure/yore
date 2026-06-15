@@ -60,15 +60,28 @@ version-controlled so your team shares it.** That's yore.
 
 ## Install
 
+**Homebrew** (macOS / Linux) — installs the binary, completions, and man page:
+
 ```sh
-# Homebrew (macOS / Linux) — installs completions + man page
-brew install Dev-Bilaspure/tap/yore
-
-# Go
-go install github.com/Dev-Bilaspure/yore/cmd/yore@latest
-
-# Or grab a prebuilt binary from the Releases page.
+brew tap Dev-Bilaspure/tap
+brew trust dev-bilaspure/tap   # one-time: Homebrew requires trusting third-party taps
+brew install yore
 ```
+
+> The `brew trust` step is a standard, one-time-per-machine confirmation that
+> Homebrew now requires for any tap outside its official catalog. After it,
+> upgrades (`brew upgrade yore`) and any future tools from this tap need no
+> further trust.
+
+**Go:**
+
+```sh
+go install github.com/Dev-Bilaspure/yore/cmd/yore@latest
+```
+
+**Prebuilt binary** — download for your platform from the
+[Releases](https://github.com/Dev-Bilaspure/yore/releases) page, extract, and put
+`yore` on your `PATH`.
 
 Then turn on recording (one line in your shell rc):
 
@@ -202,14 +215,22 @@ entries := history.RankEvents(events, history.EventQuery{
 
 ## Releasing (maintainers)
 
-Automated with [goreleaser](https://goreleaser.com):
+Releases are fully automated by [goreleaser](https://goreleaser.com) via GitHub
+Actions. One-time setup (already done): a `Dev-Bilaspure/homebrew-tap` repo and a
+`HOMEBREW_TAP_GITHUB_TOKEN` secret with write access to it.
 
-1. Create the tap repo `Dev-Bilaspure/homebrew-tap` and a token in
-   `HOMEBREW_TAP_GITHUB_TOKEN` (+ `GITHUB_TOKEN` for the release).
-2. `goreleaser check` → `git tag v0.1.0 && goreleaser release --clean`.
+To cut a release, just push a version tag:
 
-This builds binaries for linux/darwin/windows × amd64/arm64 and publishes a
-Homebrew cask so users can `brew install Dev-Bilaspure/tap/yore`.
+```sh
+git tag v0.2.0
+git push origin v0.2.0
+```
+
+The workflow builds binaries for linux/darwin/windows × amd64/arm64, publishes a
+GitHub Release, and updates the Homebrew cask in the tap. Users get it with
+`brew upgrade yore` — no re-tap or re-trust needed. To validate config locally
+before tagging: `goreleaser check` (or a dry run with
+`goreleaser release --snapshot --clean --skip=publish`).
 
 ## Contributing
 
