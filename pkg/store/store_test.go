@@ -85,12 +85,14 @@ func TestSucceeded(t *testing.T) {
 }
 
 func TestDefaultHonoursXDG(t *testing.T) {
-	t.Setenv("XDG_DATA_HOME", "/tmp/xdgtest")
+	base := t.TempDir() // an absolute, OS-native path
+	t.Setenv("XDG_DATA_HOME", base)
 	s, err := Default()
 	if err != nil {
 		t.Fatal(err)
 	}
-	if want := "/tmp/xdgtest/yore/history.jsonl"; s.Path() != want {
+	// Build the expectation with filepath.Join so separators match on Windows.
+	if want := filepath.Join(base, "yore", "history.jsonl"); s.Path() != want {
 		t.Errorf("Default path = %q, want %q", s.Path(), want)
 	}
 }
