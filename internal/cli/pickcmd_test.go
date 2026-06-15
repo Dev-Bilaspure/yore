@@ -34,6 +34,19 @@ func TestGatherCandidates(t *testing.T) {
 	}
 }
 
+func TestMaybeHintFzfShowsOnce(t *testing.T) {
+	withTempData(t)
+	var first, second strings.Builder
+	maybeHintFzf(&first)
+	maybeHintFzf(&second)
+	if !strings.Contains(first.String(), "fzf") {
+		t.Errorf("first call should print the fzf hint, got %q", first.String())
+	}
+	if second.String() != "" {
+		t.Errorf("second call should be silent (already shown), got %q", second.String())
+	}
+}
+
 func TestSelectByNumber(t *testing.T) {
 	cands := []candidate{
 		{display: "a", command: "a"},

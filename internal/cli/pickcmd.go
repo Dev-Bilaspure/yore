@@ -7,11 +7,13 @@ import (
 	"io"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strconv"
 	"strings"
 
 	"github.com/Dev-Bilaspure/yore/pkg/history"
 	"github.com/Dev-Bilaspure/yore/pkg/recipe"
+	"github.com/Dev-Bilaspure/yore/pkg/store"
 )
 
 // recipeSigil marks recipe rows in the picker so they stand out and can be
@@ -96,7 +98,28 @@ func selectCandidate(cands []candidate, stderr io.Writer) (candidate, bool) {
 	if fzfPath, err := exec.LookPath("fzf"); err == nil {
 		return selectWithFzf(fzfPath, cands)
 	}
+	maybeHintFzf(stderr)
 	return selectByNumber(cands, ttyReader(), stderr)
+}
+
+const fzfHint = "yore: fzf not found — using a basic menu. " +
+	"Install fzf for a nicer fuzzy picker (e.g. `brew install fzf`)."
+
+// maybeHintFzf prints the fzf suggestion the first time the no-fzf fallback is
+// used, then records a marker so it doesn't nag on every invocation.
+func maybeHintFzf(stderr io.Writer) {
+	st, err := store.Default()
+	if err != nil {
+		fmt.Fprintln(stderr, fzfHint) // can't track state; better to show once than never
+		return
+	}
+	marker := filepath.Join(filepath.Dir(st.Path()), ".fzf_hint_shown")
+	if _, err := os.Stat(marker); err == nil {
+		return // already shown
+	}
+	fmt.Fprintln(stderr, fzfHint)
+	_ = os.MkdirAll(filepath.Dir(marker), 0o755)
+	_ = os.WriteFile(marker, []byte("1\n"), 0o644)
 }
 
 // selectWithFzf pipes the candidate displays through fzf and maps the chosen

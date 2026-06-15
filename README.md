@@ -62,7 +62,8 @@ version-controlled so your team shares it.** That's yore.
 
 ### 1. Install the binary
 
-**Homebrew** (macOS / Linux) — also installs completions and the man page:
+**Homebrew** (macOS / Linux) — also installs completions, the man page, and
+`fzf` (used by the Ctrl-G picker):
 
 ```sh
 brew tap Dev-Bilaspure/tap
@@ -122,7 +123,9 @@ yore | fzf            # still a clean, composable pipe
 
 After `yore init`, press **Ctrl-G** to fuzzy-pick a command or recipe and drop it
 straight onto your prompt. It searches your recipes *and* your frecency-ranked
-history at once (powered by `fzf` if installed, with a numbered fallback if not).
+history at once. It uses [`fzf`](https://github.com/junegunn/fzf) for the picker
+(installed automatically with the Homebrew package); without fzf it falls back to
+a simple numbered menu, so install fzf if you used `go install` or a raw binary.
 
 ### Recipes — save the keepers, share with your team
 

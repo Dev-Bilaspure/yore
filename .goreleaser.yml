@@ -78,6 +78,10 @@ homebrew_casks:
     homepage: "https://github.com/Dev-Bilaspure/yore"
     description: "Clean, deduplicated, frecency-ranked shell history"
     license: "MIT"
+    # fzf powers the Ctrl-G interactive picker. yore degrades to a basic numbered
+    # menu without it, but brew users get the full experience out of the box.
+    dependencies:
+      - formula: fzf
     # Skip the auto-commit/push when releasing a pre-release (e.g. v0.1.0-rc1).
     skip_upload: auto
     commit_author:
