@@ -60,7 +60,9 @@ version-controlled so your team shares it.** That's yore.
 
 ## Install
 
-**Homebrew** (macOS / Linux) — installs the binary, completions, and man page:
+### 1. Install the binary
+
+**Homebrew** (macOS / Linux) — also installs completions and the man page:
 
 ```sh
 brew tap Dev-Bilaspure/tap
@@ -73,29 +75,34 @@ brew install yore
 > upgrades (`brew upgrade yore`) and any future tools from this tap need no
 > further trust.
 
-**Go:**
+Or with **Go**: `go install github.com/Dev-Bilaspure/yore/cmd/yore@latest` —
+or grab a **prebuilt binary** from the
+[Releases](https://github.com/Dev-Bilaspure/yore/releases) page.
+
+### 2. Enable it — required
+
+Add one line to your shell's startup file:
 
 ```sh
-go install github.com/Dev-Bilaspure/yore/cmd/yore@latest
+eval "$(yore init zsh)"     # in ~/.zshrc   (bash and fish have their own line)
 ```
 
-**Prebuilt binary** — download for your platform from the
-[Releases](https://github.com/Dev-Bilaspure/yore/releases) page, extract, and put
-`yore` on your `PATH`.
+This installs the hook that records each command's directory, exit status, and
+duration, and binds **Ctrl-G** to the interactive picker. **It's the on-switch:**
+without it `yore` still works for basic recall from your existing shell history,
+but project scoping (`yore here`), what-worked filtering (`--ok`), and Ctrl-G
+won't — those need the recording this turns on.
 
-Then turn on recording (one line in your shell rc):
+Open a new terminal (or `source ~/.zshrc`) for it to take effect.
 
-```sh
-eval "$(yore init zsh)"     # ~/.zshrc       (also: bash, fish)
-```
-
-That installs a lightweight hook that records each command's directory, exit
-status, and duration — and binds **Ctrl-G** to the interactive picker. Seed it
-with your existing history once:
+### 3. Seed from your existing history (recommended)
 
 ```sh
 yore import
 ```
+
+Backfills past commands from `~/.zsh_history` / `~/.bash_history` so yore is
+useful immediately instead of only learning from here on.
 
 ## Use it
 
