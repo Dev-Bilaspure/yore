@@ -38,6 +38,8 @@ jobs:
           go-version: stable
       - name: gofmt
         run: test -z "$(gofmt -l .)" || (echo 'Run gofmt -w .' && gofmt -l . && exit 1)
-      - uses: golangci/golangci-lint-action@v6
+      # golangci-lint v2 (matches the v2 schema in .golangci.yml). The v2 config
+      # requires golangci-lint-action v8+, which installs golangci-lint v2.x.
+      - uses: golangci/golangci-lint-action@v8
         with:
-          version: latest
+          version: v2.12.2
