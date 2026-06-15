@@ -10,8 +10,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/indihood/yore/pkg/history"
-	"github.com/indihood/yore/pkg/recipe"
+	"github.com/Dev-Bilaspure/yore/pkg/history"
+	"github.com/Dev-Bilaspure/yore/pkg/recipe"
 )
 
 // recipeSigil marks recipe rows in the picker so they stand out and can be

@@ -45,10 +45,10 @@ version-controlled so your team shares it.** That's yore.
 
 ```sh
 # Homebrew (macOS / Linux) — installs completions + man page
-brew install indihood/tap/yore
+brew install Dev-Bilaspure/tap/yore
 
 # Go
-go install github.com/indihood/yore/cmd/yore@latest
+go install github.com/Dev-Bilaspure/yore/cmd/yore@latest
 
 # Or grab a prebuilt binary from the Releases page.
 ```
@@ -166,8 +166,8 @@ The engine is a small, dependency-free Go API:
 
 ```go
 import (
-    "github.com/indihood/yore/pkg/store"
-    "github.com/indihood/yore/pkg/history"
+    "github.com/Dev-Bilaspure/yore/pkg/store"
+    "github.com/Dev-Bilaspure/yore/pkg/history"
 )
 
 st, _ := store.Default()
@@ -187,12 +187,12 @@ entries := history.RankEvents(events, history.EventQuery{
 
 Automated with [goreleaser](https://goreleaser.com):
 
-1. Create the tap repo `indihood/homebrew-tap` and a token in
+1. Create the tap repo `Dev-Bilaspure/homebrew-tap` and a token in
    `HOMEBREW_TAP_GITHUB_TOKEN` (+ `GITHUB_TOKEN` for the release).
 2. `goreleaser check` → `git tag v0.1.0 && goreleaser release --clean`.
 
 This builds binaries for linux/darwin/windows × amd64/arm64 and publishes a
-Homebrew cask so users can `brew install indihood/tap/yore`.
+Homebrew cask so users can `brew install Dev-Bilaspure/tap/yore`.
 
 ## Contributing
 

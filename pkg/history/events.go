@@ -4,7 +4,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/indihood/yore/pkg/store"
+	"github.com/Dev-Bilaspure/yore/pkg/store"
 )
 
 // EventQuery configures how recorded events are filtered, aggregated and ranked

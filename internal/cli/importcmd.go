@@ -6,8 +6,8 @@ import (
 	"io"
 	"strconv"
 
-	"github.com/indihood/yore/pkg/history"
-	"github.com/indihood/yore/pkg/store"
+	"github.com/Dev-Bilaspure/yore/pkg/history"
+	"github.com/Dev-Bilaspure/yore/pkg/store"
 )
 
 // runImport handles `yore import`: seed the store from existing shell history

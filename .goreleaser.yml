@@ -25,9 +25,9 @@ builds:
       - -trimpath
     ldflags:
       - -s -w
-      - -X github.com/indihood/yore/internal/cli.version={{.Version}}
-      - -X github.com/indihood/yore/internal/cli.commit={{.ShortCommit}}
-      - -X github.com/indihood/yore/internal/cli.date={{.Date}}
+      - -X github.com/Dev-Bilaspure/yore/internal/cli.version={{.Version}}
+      - -X github.com/Dev-Bilaspure/yore/internal/cli.commit={{.ShortCommit}}
+      - -X github.com/Dev-Bilaspure/yore/internal/cli.date={{.Date}}
     goos: [linux, darwin, windows]
     goarch: [amd64, arm64]
 
@@ -49,7 +49,7 @@ archives:
 # config validates without relying on a configured git remote.
 release:
   github:
-    owner: indihood
+    owner: Dev-Bilaspure
     name: yore
 
 checksum:
@@ -64,25 +64,25 @@ changelog:
       - "^chore:"
 
 # Homebrew distribution. On release this commits a Cask to the tap repo so users
-# can `brew install indihood/tap/yore`. Casks are Homebrew's recommended path for
+# can `brew install Dev-Bilaspure/tap/yore`. Casks are Homebrew's recommended path for
 # pre-built CLI binaries (the older `brews`/Formula generator is deprecated).
 homebrew_casks:
   - name: yore
     binaries: [yore]
     repository:
-      owner: indihood
+      owner: Dev-Bilaspure
       name: homebrew-tap
       branch: main
       token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
     directory: Casks
-    homepage: "https://github.com/indihood/yore"
+    homepage: "https://github.com/Dev-Bilaspure/yore"
     description: "Clean, deduplicated, frecency-ranked shell history"
     license: "MIT"
     # Skip the auto-commit/push when releasing a pre-release (e.g. v0.1.0-rc1).
     skip_upload: auto
     commit_author:
-      name: goreleaser-bot
-      email: bot@indihood.com
+      name: github-actions[bot]
+      email: 41898282+github-actions[bot]@users.noreply.github.com
     commit_msg_template: "yore: cask update for {{ .Tag }}"
     # Install the man page (shipped in the archive) ...
     manpages: [man/yore.1]

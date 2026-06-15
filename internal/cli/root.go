@@ -15,7 +15,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/indihood/yore/pkg/history"
+	"github.com/Dev-Bilaspure/yore/pkg/history"
 )
 
 const usageText = `yore - your shell history as project-aware, frecency-ranked memory.

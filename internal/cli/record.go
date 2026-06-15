@@ -7,8 +7,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/indihood/yore/pkg/history"
-	"github.com/indihood/yore/pkg/store"
+	"github.com/Dev-Bilaspure/yore/pkg/history"
+	"github.com/Dev-Bilaspure/yore/pkg/store"
 )
 
 // runRecord handles `yore record ...`, the target of the shell hook. It appends
