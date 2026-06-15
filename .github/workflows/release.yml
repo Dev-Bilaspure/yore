@@ -1,0 +1,35 @@
+# Release pipeline: pushing a version tag (e.g. v0.1.0) builds cross-platform
+# binaries, publishes a GitHub Release, and updates the Homebrew cask in the tap.
+#
+# Required repository secret:
+#   HOMEBREW_TAP_GITHUB_TOKEN  — a PAT with write access to the homebrew-tap repo.
+# (GITHUB_TOKEN is provided automatically for the GitHub Release itself.)
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write # create the GitHub Release
+
+jobs:
+  goreleaser:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # full history so goreleaser can build the changelog
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: stable
+
+      - uses: goreleaser/goreleaser-action@v6
+        with:
+          version: "~> v2"
+          args: release --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HOMEBREW_TAP_GITHUB_TOKEN: ${{ secrets.HOMEBREW_TAP_GITHUB_TOKEN }}
