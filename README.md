@@ -8,6 +8,8 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/Dev-Bilaspure/yore)](https://goreportcard.com/report/github.com/Dev-Bilaspure/yore)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
+<p align="center"><img src="docs/demo.gif" alt="yore demo: project-aware recall, a saved recipe, and the Ctrl-G picker" width="820"></p>
+
 Your shell records everything you type but understands none of it. The 40-character
 `kubectl`/`docker`/`gcloud` incantation you figured out three months ago is now
 buried in flat history, a stale README, or your teammate's head — so you re-derive
