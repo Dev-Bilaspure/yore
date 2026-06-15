@@ -2,6 +2,12 @@
 
 **Your shell history as project-aware, frecency-ranked, team-shareable memory.**
 
+[![CI](https://github.com/Dev-Bilaspure/yore/actions/workflows/ci.yml/badge.svg)](https://github.com/Dev-Bilaspure/yore/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/Dev-Bilaspure/yore?sort=semver)](https://github.com/Dev-Bilaspure/yore/releases)
+[![Go Reference](https://pkg.go.dev/badge/github.com/Dev-Bilaspure/yore.svg)](https://pkg.go.dev/github.com/Dev-Bilaspure/yore)
+[![Go Report Card](https://goreportcard.com/badge/github.com/Dev-Bilaspure/yore)](https://goreportcard.com/report/github.com/Dev-Bilaspure/yore)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 Your shell records everything you type but understands none of it. The 40-character
 `kubectl`/`docker`/`gcloud` incantation you figured out three months ago is now
 buried in flat history, a stale README, or your teammate's head — so you re-derive
@@ -28,6 +34,17 @@ No daemon. No database. No `Ctrl-R` hijack. Plain-text, git-friendly storage, an
 a single dependency-free binary.
 
 ---
+
+## Contents
+
+- [Why not just atuin / fzf / navi?](#why-not-just-atuin--fzf--navi)
+- [Install](#install)
+- [Use it](#use-it) · [Recall](#recall) · [Interactive pick](#interactive-pick-ctrl-g) · [Recipes](#recipes--save-the-keepers-share-with-your-team)
+- [How it works](#how-it-works)
+- [Privacy](#privacy)
+- [Commands](#commands)
+- [Library](#library)
+- [Roadmap](#roadmap) · [Contributing](#contributing) · [License](#license)
 
 ## Why not just `atuin` / `fzf` / `navi`?
 
