@@ -1,0 +1,32 @@
+# golangci-lint configuration for yore.
+# Run with: golangci-lint run
+version: "2"
+
+linters:
+  enable:
+    - errcheck
+    - govet
+    - ineffassign
+    - staticcheck
+    - unused
+    - misspell
+    - revive
+    - unconvert
+    - gocritic
+  settings:
+    errcheck:
+      # Diagnostic/output writes to stderr and stdout: a failed write here is
+      # not actionable (the stream is already broken), so do not require checks.
+      exclude-functions:
+        - fmt.Fprint
+        - fmt.Fprintf
+        - fmt.Fprintln
+
+formatters:
+  enable:
+    - gofmt
+    - goimports
+
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0

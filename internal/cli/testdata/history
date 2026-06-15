@@ -1,0 +1,4 @@
+: 1700000000:0;git status
+: 1700000100:0;git status
+: 1700000200:0;docker compose up -d
+: 1700000300:0;ls -la

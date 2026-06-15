@@ -1,0 +1,12 @@
+# Build artifacts
+/bin/
+/dist/
+yore
+
+# Coverage
+*.out
+coverage.txt
+
+# Editor / OS
+.DS_Store
+*.swp

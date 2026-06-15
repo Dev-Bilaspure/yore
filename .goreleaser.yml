@@ -1,0 +1,111 @@
+# goreleaser configuration for yore.
+#
+# Validate this file:        goreleaser check
+# Test the build locally:    goreleaser build --snapshot --clean
+# Cut a real release:        git tag v0.1.0 && goreleaser release --clean
+#
+# A release publishes cross-platform binaries to GitHub Releases AND updates the
+# Homebrew formula in the tap repo (see `brews` below). The tap update needs a
+# token with write access to the tap repo, exported as HOMEBREW_TAP_GITHUB_TOKEN.
+version: 2
+
+project_name: yore
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: yore
+    main: ./cmd/yore
+    binary: yore
+    env:
+      - CGO_ENABLED=0
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w
+      - -X github.com/indihood/yore/internal/cli.version={{.Version}}
+      - -X github.com/indihood/yore/internal/cli.commit={{.ShortCommit}}
+      - -X github.com/indihood/yore/internal/cli.date={{.Date}}
+    goos: [linux, darwin, windows]
+    goarch: [amd64, arm64]
+
+archives:
+  - id: yore
+    formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+    # Shipped alongside the binary so the Homebrew formula can install the man
+    # page. Shell completions are generated from the binary itself at install
+    # time (see brews.extra_install), so they need not be archived.
+    files:
+      - README.md
+      - LICENSE
+      - man/yore.1
+
+# The GitHub repository the release is published to. Declared explicitly so the
+# config validates without relying on a configured git remote.
+release:
+  github:
+    owner: indihood
+    name: yore
+
+checksum:
+  name_template: checksums.txt
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^chore:"
+
+# Homebrew distribution. On release this commits a Cask to the tap repo so users
+# can `brew install indihood/tap/yore`. Casks are Homebrew's recommended path for
+# pre-built CLI binaries (the older `brews`/Formula generator is deprecated).
+homebrew_casks:
+  - name: yore
+    binaries: [yore]
+    repository:
+      owner: indihood
+      name: homebrew-tap
+      branch: main
+      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
+    directory: Casks
+    homepage: "https://github.com/indihood/yore"
+    description: "Clean, deduplicated, frecency-ranked shell history"
+    license: "MIT"
+    # Skip the auto-commit/push when releasing a pre-release (e.g. v0.1.0-rc1).
+    skip_upload: auto
+    commit_author:
+      name: goreleaser-bot
+      email: bot@indihood.com
+    commit_msg_template: "yore: cask update for {{ .Tag }}"
+    # Install the man page (shipped in the archive) ...
+    manpages: [man/yore.1]
+    # ... and generate bash/zsh/fish completions by running the binary:
+    # this invokes `yore completion <shell>` for each shell and installs them.
+    # Homebrew defaults to bash, zsh and fish when shells are unspecified.
+    generate_completions_from_executable:
+      executable: yore
+      args: [completion]
+    # Unsigned binaries are quarantined by macOS Gatekeeper; strip the attribute
+    # on install so `yore` runs without a security prompt.
+    hooks:
+      post:
+        install: |
+          system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/yore"] if OS.mac?
+    caveats: |
+      Shell completions for bash, zsh and fish were installed.
+
+      Enable command recording (captures cwd + exit status, unlocks `yore here`
+      and binds Ctrl-G to the fuzzy picker). Add to your shell rc:
+
+        zsh:   eval "$(yore init zsh)"      # ~/.zshrc
+        bash:  eval "$(yore init bash)"     # ~/.bashrc
+        fish:  yore init fish | source      # ~/.config/fish/config.fish
+
+      Then seed it from your existing history:  yore import

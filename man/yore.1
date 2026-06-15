@@ -1,0 +1,135 @@
+.\" Manpage for yore.
+.TH YORE 1 "2026-06-15" "yore" "User Commands"
+.SH NAME
+yore \- project-aware, frecency-ranked, team-shareable shell command memory
+.SH SYNOPSIS
+.B yore
+[\fIflags\fR]
+.br
+.B yore here
+[\fIflags\fR]
+.br
+.B yore
+\fIsubcommand\fR [\fIargs\fR]
+.SH DESCRIPTION
+.B yore
+turns your shell history into useful memory. It ranks the commands you reuse by
+.IR frecency
+(frequency and recency combined), scopes them to the current project, knows
+which ones exited successfully, and lets you save commands as named,
+parameterized
+.IR recipes
+that can be committed and shared with a team.
+.PP
+Install the recording hook with
+.B yore init
+to capture each command's directory, exit status and duration. Until then,
+.B yore
+reads your existing shell history. yore is local-only: no daemon, no database,
+no network. Commands that look like they contain secrets are never recorded.
+.SH FLAGS
+.TP
+.BR \-n ", " \-\-top " " \fIN\fR
+Limit output to the top \fIN\fR commands (0 = all).
+.TP
+.B \-\-here
+Scope recall to the current project (same as
+.BR "yore here" ).
+.TP
+.B \-\-ok
+Only commands that have exited successfully.
+.TP
+.BR \-\-sort " " \fIMODE\fR
+Ordering: \fBfrecency\fR (default), \fBrecent\fR, \fBfrequent\fR or \fBraw\fR.
+.TP
+.BR \-\-half\-life " " \fIDUR\fR
+Frecency decay half-life, e.g. \fB720h\fR (default, 30 days).
+.TP
+.BR \-\-min\-count " " \fIN\fR
+Only commands used at least \fIN\fR times.
+.TP
+.B \-\-count
+Prefix each line with its usage count (TAB-separated).
+.TP
+.B \-\-redact
+Drop commands that look like they contain secrets.
+.TP
+.BR \-\-file " " \fIPATH\fR
+Read a specific history file instead of recorded memory (repeatable; use
+.B \-
+for standard input).
+.TP
+.BR \-0 ", " \-\-null
+Separate entries with NUL instead of newline.
+.TP
+.B \-\-version
+Print version and exit.
+.SH SUBCOMMANDS
+.TP
+.B here
+Recall commands used in the current project.
+.TP
+.B pick
+Fuzzy-pick a command or recipe and print it (bound to Ctrl-G by
+.BR "yore init" ).
+.TP
+.BI "save " "name " "\-\- " command
+Save a command as a reusable recipe. Use \fB{placeholders}\fR for variable
+parts. Flags: \fB\-\-desc\fR, \fB\-\-last\fR (use the most recent command),
+\fB\-\-project\fR (write to ./.yorefile).
+.TP
+.BI "run " name
+Run a saved recipe, prompting for parameters.
+Flags: \fB\-\-print\fR, \fB\-\-yes\fR.
+.TP
+.B recipes
+List saved recipes.
+.TP
+.BI "init " shell
+Print shell integration for bash, zsh or fish (eval/source it).
+.TP
+.B import
+Seed memory from existing shell history files.
+.TP
+.BI "completion " shell
+Output a bash, zsh or fish completion script.
+.SH FILES
+.TP
+.B ~/.local/share/yore/history.jsonl
+Recorded command events (private).
+.TP
+.B ~/.config/yore/recipes
+Personal recipes.
+.TP
+.B ./.yorefile
+Per-project recipes (commit to share with your team).
+.SH RANKING
+Each unique command is scored as
+.IR count " " \(mu " 2^(\-" age " / " half-life ),
+so a command used many times long ago can be outranked by one used a few times
+recently. History without timestamps falls back to pure frequency.
+.SH EXAMPLES
+.TP
+.B yore here --ok
+Commands that worked, in the current project.
+.TP
+.B yore save --project deploy -- ./deploy.sh --env '{env}'
+Save a team recipe with an {env} parameter.
+.TP
+.B yore run deploy
+Run it, prompting for {env}.
+.SH EXIT STATUS
+.TP
+.B 0
+Success (including a closed downstream pipe and a cancelled picker).
+.TP
+.B 1
+A runtime error.
+.TP
+.B 2
+A usage error.
+.SH SEE ALSO
+.BR fzf (1),
+.BR history (1)
+.SH HOMEPAGE
+https://github.com/indihood/yore
