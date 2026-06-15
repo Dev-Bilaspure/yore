@@ -1,5 +1,5 @@
 BINARY := yore
-PKG := github.com/indihood/yore
+PKG := github.com/Dev-Bilaspure/yore
 VERSION ?= $(shell git describe --tags --always --dirty 2>/dev/null || echo dev)
 COMMIT ?= $(shell git rev-parse --short HEAD 2>/dev/null || echo none)
 DATE ?= $(shell date -u +%Y-%m-%dT%H:%M:%SZ)

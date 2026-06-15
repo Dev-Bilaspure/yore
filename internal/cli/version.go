@@ -2,7 +2,7 @@ package cli
 
 // Build metadata. These are overridden at release time via -ldflags, e.g.
 //
-//	go build -ldflags "-X github.com/indihood/yore/internal/cli.version=v1.2.3"
+//	go build -ldflags "-X github.com/Dev-Bilaspure/yore/internal/cli.version=v1.2.3"
 //
 // goreleaser sets them automatically.
 var (

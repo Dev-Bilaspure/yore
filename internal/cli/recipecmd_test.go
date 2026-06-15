@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/indihood/yore/pkg/recipe"
+	"github.com/Dev-Bilaspure/yore/pkg/recipe"
 )
 
 func TestSaveRunRecipesFlow(t *testing.T) {

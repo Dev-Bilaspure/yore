@@ -10,8 +10,8 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/indihood/yore/pkg/recipe"
-	"github.com/indihood/yore/pkg/store"
+	"github.com/Dev-Bilaspure/yore/pkg/recipe"
+	"github.com/Dev-Bilaspure/yore/pkg/store"
 )
 
 // loadRecipes returns the merged recipe set: personal recipes overlaid by the

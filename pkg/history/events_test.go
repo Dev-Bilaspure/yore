@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/indihood/yore/pkg/store"
+	"github.com/Dev-Bilaspure/yore/pkg/store"
 )
 
 func sampleEvents() []store.Event {

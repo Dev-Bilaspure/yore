@@ -2,13 +2,13 @@
 // commands you actually reuse — and lets you save the keepers as reusable,
 // team-shareable recipes.
 //
-// See https://github.com/indihood/yore for documentation.
+// See https://github.com/Dev-Bilaspure/yore for documentation.
 package main
 
 import (
 	"os"
 
-	"github.com/indihood/yore/internal/cli"
+	"github.com/Dev-Bilaspure/yore/internal/cli"
 )
 
 func main() {

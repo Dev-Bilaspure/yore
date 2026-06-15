@@ -3,8 +3,8 @@ package cli
 import (
 	"strconv"
 
-	"github.com/indihood/yore/pkg/history"
-	"github.com/indihood/yore/pkg/store"
+	"github.com/Dev-Bilaspure/yore/pkg/history"
+	"github.com/Dev-Bilaspure/yore/pkg/store"
 )
 
 // histfileEvents reads the given shell history files (or auto-detected ones)
