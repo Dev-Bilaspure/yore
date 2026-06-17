@@ -122,21 +122,30 @@ func enableLine() (cmd, rcFile string) {
 }
 
 // styles holds text decorators so rendering stays pure and testable: production
-// passes ANSI decorators, tests pass identity functions.
+// passes ANSI decorators, tests pass identity functions. Colors use the basic
+// ANSI palette so they adapt to the user's terminal theme rather than fighting
+// it.
 type styles struct {
-	bold, dim, ok func(string) string
+	title func(string) string // headings / brand
+	key   func(string) string // commands and keys the user should type
+	dim   func(string) string // secondary text
+	ok    func(string) string // success
 }
 
 func plainStyles() styles {
 	id := func(s string) string { return s }
-	return styles{bold: id, dim: id, ok: id}
+	return styles{title: id, key: id, dim: id, ok: id}
 }
 
 func ansiStyles() styles {
+	wrap := func(code string) func(string) string {
+		return func(s string) string { return "\033[" + code + "m" + s + "\033[0m" }
+	}
 	return styles{
-		bold: func(s string) string { return "\033[1m" + s + "\033[0m" },
-		dim:  func(s string) string { return "\033[2m" + s + "\033[0m" },
-		ok:   func(s string) string { return "\033[32m" + s + "\033[0m" },
+		title: wrap("1"),    // bold
+		key:   wrap("1;36"), // bold cyan — the things to type
+		dim:   wrap("2"),    // dim — secondary text
+		ok:    wrap("1;32"), // bold green — success
 	}
 }
 
@@ -163,10 +172,10 @@ func renderOnboarding(in onboardInput, s styles) (string, onboardState) {
 			// "did that work?" loop) and point at the payoff.
 			st.Activated = true
 			fmt.Fprintf(&b, "\n%s yore is recording — it now learns each command with its project and exit status.\n", s.ok("✓"))
-			fmt.Fprintf(&b, "  Press %s to fuzzy-pick a command onto your prompt.\n", s.bold("Ctrl-G"))
+			fmt.Fprintf(&b, "  Press %s to fuzzy-pick a command onto your prompt.\n", s.key("Ctrl-G"))
 		case !st.PickUsed:
 			// Recording, but they haven't tried the picker yet — the last nudge.
-			fmt.Fprintf(&b, "\n%s press %s to fuzzy-pick a command onto your prompt.\n", s.dim("tip:"), s.bold("Ctrl-G"))
+			fmt.Fprintf(&b, "\n%s press %s to fuzzy-pick a command onto your prompt.\n", s.dim("tip:"), s.key("Ctrl-G"))
 		}
 		return b.String(), st
 	}
@@ -174,25 +183,25 @@ func renderOnboarding(in onboardInput, s styles) (string, onboardState) {
 	// Hook not active — getting it enabled is the whole job here.
 	if !st.Welcomed {
 		st.Welcomed = true
-		fmt.Fprintf(&b, "\n%s\n", s.bold("Welcome to yore."))
+		fmt.Fprintf(&b, "\n%s\n", s.title("Welcome to yore."))
 		if in.hasEntries {
 			fmt.Fprintln(&b, s.dim("The commands above are the ones you reuse most, from your shell history."))
 		} else {
 			fmt.Fprintln(&b, s.dim("Enable yore and the commands you reuse most will show up here."))
 		}
-		fmt.Fprintln(&b, "\nThat's a static snapshot. Enable yore to unlock the rest:")
+		fmt.Fprintln(&b, "\nEnable yore to unlock the rest:")
 		fmt.Fprintf(&b, "  %s live recording of every command, with its project and exit status\n", s.dim("·"))
-		fmt.Fprintf(&b, "  %s %s — the commands you actually run in the current project\n", s.dim("·"), s.bold("yore here"))
-		fmt.Fprintf(&b, "  %s %s — fuzzy-pick any command straight onto your prompt\n", s.dim("·"), s.bold("Ctrl-G"))
-		fmt.Fprintf(&b, "\nAdd this line, then restart your shell:\n  %s   %s\n", s.bold(in.enableCmd), s.dim("# "+in.enableRC))
+		fmt.Fprintf(&b, "  %s %s — the commands you actually run in the current project\n", s.dim("·"), s.key("yore here"))
+		fmt.Fprintf(&b, "  %s %s — fuzzy-pick any command straight onto your prompt\n", s.dim("·"), s.key("Ctrl-G"))
+		fmt.Fprintf(&b, "\nAdd this line, then restart your shell:\n  %s   %s\n", s.key(in.enableCmd), s.dim("# "+in.enableRC))
 		return b.String(), st
 	}
 
 	// Seen the welcome, still not enabled: a slim, persistent nudge toward the
 	// one step that matters. It stays until the hook is on, then is gone for good.
 	fmt.Fprintf(&b, "\n%s enable recording for %s and %s:\n  %s   %s\n",
-		s.dim("yore isn't recording yet —"), s.bold("yore here"), s.bold("Ctrl-G"),
-		s.bold(in.enableCmd), s.dim("# "+in.enableRC))
+		s.dim("yore isn't recording yet —"), s.key("yore here"), s.key("Ctrl-G"),
+		s.key(in.enableCmd), s.dim("# "+in.enableRC))
 	return b.String(), st
 }
 
