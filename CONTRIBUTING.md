@@ -47,6 +47,22 @@ yore is tested at several levels — run the one that fits your change, and
 Tests are pure and hermetic: they use in-memory filesystems, `t.TempDir()`, and
 injected `Now`/readers, so they never touch your real history or store.
 
+## Git hooks (optional, recommended)
+
+Install local hooks once so problems surface before CI does:
+
+```sh
+make hooks
+```
+
+This points `core.hooksPath` at the committed `scripts/hooks/`:
+- **pre-commit** (fast): `gofmt` on staged files + `go vet`.
+- **pre-push** (thorough): `golangci-lint` + `go test -race` — mirrors CI.
+- **commit-msg**: strips AI co-author trailers.
+
+Hooks are a convenience, not a gate — they're per-clone and bypassable
+(`git commit/push --no-verify`). **CI remains the source of truth.**
+
 ## Manual / interactive testing — the sandbox
 
 Some behaviour is inherently interactive and can't be unit-tested: the

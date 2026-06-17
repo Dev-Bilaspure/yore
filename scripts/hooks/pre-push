@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+#
+# Thorough pre-push checks — runs once per push, so a few seconds is fine.
+# This mirrors what CI gates on, catching failures before they reach the remote.
+# Bypass with:  git push --no-verify
+set -euo pipefail
+cd "$(git rev-parse --show-toplevel)"
+
+if command -v golangci-lint >/dev/null 2>&1; then
+  if ! golangci-lint run ./...; then
+    echo "✗ pre-push: golangci-lint failed" >&2
+    exit 1
+  fi
+else
+  echo "• pre-push: golangci-lint not installed — skipping (CI will run it)" >&2
+fi
+
+if ! go test -race ./...; then
+  echo "✗ pre-push: race tests failed" >&2
+  exit 1
+fi
+
+echo "✓ pre-push: lint + race tests ok"

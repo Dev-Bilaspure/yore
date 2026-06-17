@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+#
+# Strip AI co-authorship trailers from commit messages. yore's commits do not
+# carry AI attribution; this guards against it slipping in. Only Claude/Anthropic
+# co-author lines are removed — legitimate human co-authors are untouched.
+set -euo pipefail
+msg_file="${1:?commit-msg hook expects the message file path}"
+[ -f "$msg_file" ] || exit 0
+
+before=$(cat "$msg_file")
+
+# Drop matching trailers, then trim any trailing blank lines they leave behind.
+stripped=$(grep -viE 'co-authored-by:.*(claude|anthropic)|generated with .*(claude|anthropic)' "$msg_file" || true)
+printf '%s\n' "$stripped" | awk 'NF{last=NR} {line[NR]=$0} END{for (i=1;i<=last;i++) print line[i]}' > "$msg_file"
+
+if [ "$before" != "$(cat "$msg_file")" ]; then
+  echo "• commit-msg: removed AI co-author trailer" >&2
+fi

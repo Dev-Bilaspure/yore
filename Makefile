@@ -8,7 +8,7 @@ LDFLAGS := -s -w \
 	-X '$(PKG)/internal/cli.commit=$(COMMIT)' \
 	-X '$(PKG)/internal/cli.date=$(DATE)'
 
-.PHONY: all build install test race cover fuzz vet fmt lint check dev dev-fresh demo help clean
+.PHONY: all build install test race cover fuzz vet fmt lint check dev dev-fresh demo hooks help clean
 
 all: check build
 
@@ -55,6 +55,11 @@ dev-fresh: ## Sandbox shell from a clean slate (to walk the onboarding journey)
 
 demo: ## Render the demo GIF (requires vhs + fzf)
 	ZDOTDIR=$$(mktemp -d) vhs docs/demo.tape
+
+hooks: ## Install git hooks (fast pre-commit, thorough pre-push)
+	@chmod +x scripts/hooks/*
+	@git config core.hooksPath scripts/hooks
+	@echo "✓ git hooks installed (core.hooksPath=scripts/hooks). Bypass any hook with --no-verify."
 
 clean: ## Remove build artifacts
 	rm -rf bin dist
