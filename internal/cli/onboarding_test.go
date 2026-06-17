@@ -13,7 +13,7 @@ func TestRenderOnboarding(t *testing.T) {
 	t.Run("first run shows welcome + enable CTA", func(t *testing.T) {
 		in := base
 		text, next := renderOnboarding(in, plain)
-		for _, want := range []string{"Welcome to yore", "Ctrl-G", "yore here", `eval "$(yore init zsh)"`, "~/.zshrc"} {
+		for _, want := range []string{"yore", "shell history, made useful", "Ctrl-G", "yore here", `eval "$(yore init zsh)"`, "~/.zshrc"} {
 			if !strings.Contains(text, want) {
 				t.Errorf("welcome missing %q:\n%s", want, text)
 			}

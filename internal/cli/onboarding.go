@@ -183,17 +183,18 @@ func renderOnboarding(in onboardInput, s styles) (string, onboardState) {
 	// Hook not active — getting it enabled is the whole job here.
 	if !st.Welcomed {
 		st.Welcomed = true
-		fmt.Fprintf(&b, "\n%s\n", s.title("Welcome to yore."))
+		// Wordmark: a bold-cyan accent bar + name, with a dim tagline.
+		fmt.Fprintf(&b, "\n%s   %s\n\n", s.key("▌ yore"), s.dim("shell history, made useful"))
 		if in.hasEntries {
-			fmt.Fprintln(&b, s.dim("The commands above are the ones you reuse most, from your shell history."))
+			fmt.Fprintln(&b, "The commands above are the ones you reuse most.")
 		} else {
 			fmt.Fprintln(&b, s.dim("Enable yore and the commands you reuse most will show up here."))
 		}
 		fmt.Fprintln(&b, "\nEnable yore to unlock the rest:")
-		fmt.Fprintf(&b, "  %s live recording of every command, with its project and exit status\n", s.dim("·"))
-		fmt.Fprintf(&b, "  %s %s — the commands you actually run in the current project\n", s.dim("·"), s.key("yore here"))
-		fmt.Fprintf(&b, "  %s %s — fuzzy-pick any command straight onto your prompt\n", s.dim("·"), s.key("Ctrl-G"))
-		fmt.Fprintf(&b, "\nAdd this line, then restart your shell:\n  %s   %s\n", s.key(in.enableCmd), s.dim("# "+in.enableRC))
+		fmt.Fprintf(&b, "  %s live recording (project + exit status)\n", s.dim("·"))
+		fmt.Fprintf(&b, "  %s %s   commands for this project\n", s.dim("·"), s.key("yore here"))
+		fmt.Fprintf(&b, "  %s %s      fuzzy-pick onto your prompt\n", s.dim("·"), s.key("Ctrl-G"))
+		fmt.Fprintf(&b, "\n  %s   %s\n", s.key(in.enableCmd), s.dim("# add to "+in.enableRC))
 		return b.String(), st
 	}
 
