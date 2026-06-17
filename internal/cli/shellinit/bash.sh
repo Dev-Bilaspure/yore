@@ -1,6 +1,7 @@
 # yore shell integration for bash.  Add to ~/.bashrc:   eval "$(yore init bash)"
 # Captures each command via a DEBUG trap and records it (with exit status) from
 # PROMPT_COMMAND. For the most robust capture, consider bash-preexec.sh.
+export YORE_SESSION=1   # lets yore detect that recording is enabled in this shell
 
 _yore_debug() {
   # Ignore completion and the prompt command itself.

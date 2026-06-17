@@ -1,5 +1,6 @@
 # yore shell integration for fish.  Add to ~/.config/fish/config.fish:
 #   yore init fish | source
+set -gx YORE_SESSION 1   # lets yore detect that recording is enabled in this shell
 
 function _yore_record --on-event fish_postexec
     set -l code $status

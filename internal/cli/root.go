@@ -202,8 +202,13 @@ func Run(args []string, stdout, stderr io.Writer) int {
 			q.Dir = projectRoot(currentDir())
 		}
 		entries = history.RankEvents(events, q)
-		if (hereFlag || forceHere) && len(entries) == 0 {
-			hintNoProjectMemory(stderr)
+		if (hereFlag || forceHere) && len(entries) == 0 && hookActive() {
+			fmt.Fprintln(stderr, "yore: no commands recorded in this project yet — run some and they'll appear here.")
+		}
+		// First interactive run (before recording is enabled): show a digestible
+		// preview rather than dumping the entire history.
+		if !hereFlag && !forceHere && top == 0 && onFirstInteractiveRun(stdout) && len(entries) > welcomePreview {
+			entries = entries[:welcomePreview]
 		}
 	}
 
@@ -216,14 +221,11 @@ func Run(args []string, stdout, stderr io.Writer) int {
 		fmt.Fprintf(stderr, "yore: %v\n", err)
 		return 1
 	}
+	// Onboarding guidance (stderr, interactive-only) for the recall path.
+	if len(files) == 0 {
+		onboardingFooter(stdout, stderr, len(entries) > 0)
+	}
 	return 0
-}
-
-// hintNoProjectMemory nudges the user to enable recording, which is what makes
-// project-scoped recall possible (directory context comes only from recording).
-func hintNoProjectMemory(stderr io.Writer) {
-	fmt.Fprintln(stderr, "yore: no commands recorded for this project yet.")
-	fmt.Fprintln(stderr, "      enable recording with:  eval \"$(yore init zsh)\"  (then re-run)")
 }
 
 // isBrokenPipe reports whether err is an EPIPE-style "downstream closed the

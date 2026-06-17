@@ -1,4 +1,5 @@
 # yore shell integration for zsh.  Add to ~/.zshrc:   eval "$(yore init zsh)"
+export YORE_SESSION=1   # lets yore detect that recording is enabled in this shell
 zmodload zsh/datetime 2>/dev/null
 
 typeset -g _YORE_CMD _YORE_START

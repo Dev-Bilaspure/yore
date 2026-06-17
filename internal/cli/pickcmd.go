@@ -43,6 +43,8 @@ func runPick(args []string, stdout, stderr io.Writer) int {
 		return 2
 	}
 
+	markPickUsed() // they've engaged with the picker — stop nudging Ctrl-G
+
 	cands := gatherCandidates(here)
 	if len(cands) == 0 {
 		return 0
