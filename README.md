@@ -96,16 +96,13 @@ without it `yore` still works for basic recall from your existing shell history,
 but project scoping (`yore here`), what-worked filtering (`--ok`), and Ctrl-G
 won't — those need the recording this turns on.
 
-Open a new terminal (or `source ~/.zshrc`) for it to take effect.
+Open a new terminal (or `source ~/.zshrc`) for it to take effect, then run
+`yore` — it guides you from there.
 
-### 3. Seed from your existing history (recommended)
-
-```sh
-yore import
-```
-
-Backfills past commands from `~/.zsh_history` / `~/.bash_history` so yore is
-useful immediately instead of only learning from here on.
+> **That's it.** You don't need to import anything: `yore` already reads your
+> existing shell history, so recall works from the first run. If you'd like to
+> make that history a permanent part of yore's own store (so it survives history
+> rotation), you can optionally run `yore import` once.
 
 ## Use it
 

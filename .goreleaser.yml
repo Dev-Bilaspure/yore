@@ -112,4 +112,4 @@ homebrew_casks:
         bash:  eval "$(yore init bash)"     # ~/.bashrc
         fish:  yore init fish | source      # ~/.config/fish/config.fish
 
-      Then seed it from your existing history:  yore import
+      Then run `yore` — it'll guide you from there.
