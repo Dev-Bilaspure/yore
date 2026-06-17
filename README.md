@@ -1,6 +1,6 @@
 # yore
 
-**Your shell history as project-aware, frecency-ranked, team-shareable memory.**
+**The commands you rely on, learned from your shell history.**
 
 [![CI](https://github.com/Dev-Bilaspure/yore/actions/workflows/ci.yml/badge.svg)](https://github.com/Dev-Bilaspure/yore/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/Dev-Bilaspure/yore?sort=semver)](https://github.com/Dev-Bilaspure/yore/releases)
@@ -10,15 +10,20 @@
 
 <p align="center"><img src="docs/demo.gif" alt="yore demo: project-aware recall, a saved recipe, and the Ctrl-G picker" width="820"></p>
 
-Your shell records everything you type but understands none of it. The 40-character
-`kubectl`/`docker`/`gcloud` incantation you figured out three months ago is now
-buried in flat history, a stale README, or your teammate's head — so you re-derive
-it. Again.
+Your shell records everything you type but understands none of it. The fiddly
+command you worked out three months ago is in there — buried among thousands of
+one-offs you'll never run again. So you re-derive it. Nothing ever marked it as
+worth keeping.
 
-`yore` fixes that. It ranks the commands you actually reuse by **frecency**
-(frequency + recency), scopes them to the **project you're in**, knows which ones
-**actually worked**, and lets you save the keepers as **named, parameterized
-recipes you can commit and share with your team**.
+Most tools here ask you to curate first — to write the commands worth keeping
+down before they help. `yore` works the other way around: it starts from what
+you already run and learns which commands you actually rely on. The ones that
+matter then have a natural next step — promote a command into a reusable,
+parameterized recipe, and commit it when it's worth sharing.
+
+Frecency, project scope, and exit status are just how yore reads "what you rely
+on" from real usage. The structure emerges from your history; you don't author it
+up front.
 
 ```console
 $ yore here                 # what actually gets run in THIS repo
@@ -32,33 +37,36 @@ tag: v2.1.0
 → ./deploy.sh --env prod --tag v2.1.0
 ```
 
-No daemon. No database. No `Ctrl-R` hijack. Plain-text, git-friendly storage, and
-a single dependency-free binary.
+yore is a single local binary; the commands you keep are plain text you can
+commit, so they travel with the repo when you want them to.
 
 ---
 
 ## Contents
 
-- [Why not just atuin / fzf / navi?](#why-not-just-atuin--fzf--navi)
+- [Why yore, if I already use atuin / fzf / just?](#why-yore-if-i-already-use-atuin--fzf--just)
 - [Install](#install)
-- [Use it](#use-it) · [Recall](#recall) · [Interactive pick](#interactive-pick-ctrl-g) · [Recipes](#recipes--save-the-keepers-share-with-your-team)
+- [Use it](#use-it) · [Recall](#recall) · [Interactive pick](#interactive-pick-ctrl-g) · [Recipes](#recipes--promote-what-you-rely-on)
 - [How it works](#how-it-works)
 - [Privacy](#privacy)
 - [Commands](#commands)
 - [Library](#library)
 - [Roadmap](#roadmap) · [Contributing](#contributing) · [License](#license)
 
-## Why not just `atuin` / `fzf` / `navi`?
+## Why yore, if I already use `atuin` / `fzf` / `just`?
 
-| | what it does | the gap yore fills |
-| --- | --- | --- |
-| `fzf` + Ctrl-R | fuzzy-search raw history | no ranking, no context, no recipes |
-| `atuin` / `mcfly` | recorded history search (SQLite, sync) | personal-only, binary store, replaces Ctrl-R |
-| `just` / `make` | named project commands | hand-authored, not learned from real use |
-| `navi` / `tldr` | cheatsheets | manually maintained |
+`fzf` and `atuin` are about **recall** — searching what you've already run
+(atuin durably, and synced). They're excellent at it, and that's where they stop.
 
-**Nobody else does: auto-learned from real usage + scoped to this project +
-version-controlled so your team shares it.** That's yore.
+`just`, `make`, `pet` and `navi` are about **curated commands** — but you write
+them by hand, up front, separate from what you actually do, and only if you
+remember to.
+
+yore's bet is that you shouldn't have to curate up front. It learns which commands
+you rely on from real usage, and lets the ones that matter grow into reusable
+commands you can keep and share. It isn't a better history search than atuin or a
+better task runner than just — it's the part in between: turning real usage into
+kept knowledge without writing it down first.
 
 ## Install
 
@@ -126,7 +134,11 @@ history at once. It uses [`fzf`](https://github.com/junegunn/fzf) for the picker
 (installed automatically with the Homebrew package); without fzf it falls back to
 a simple numbered menu, so install fzf if you used `go install` or a raw binary.
 
-### Recipes — save the keepers, share with your team
+### Recipes — promote what you rely on
+
+Once a command has earned its place in your history, promote it: name it, mark
+the parts that vary. Keep it for yourself, or save it with `--project` to commit
+it alongside the code.
 
 ```sh
 # Save a command (write {placeholders} for the parts that vary):
