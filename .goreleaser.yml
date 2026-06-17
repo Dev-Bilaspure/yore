@@ -46,11 +46,21 @@ archives:
       - man/yore.1
 
 # The GitHub repository the release is published to. Declared explicitly so the
-# config validates without relying on a configured git remote.
+# config validates without relying on a configured git remote. The header is
+# prepended to every release's notes (above the auto-generated changelog);
+# version-specific highlights, when wanted, are added by hand on the release.
 release:
   github:
     owner: Dev-Bilaspure
     name: yore
+  header: |
+    ### Install / upgrade
+
+    ```sh
+    brew upgrade yore
+    # first time:
+    brew tap Dev-Bilaspure/tap && brew trust dev-bilaspure/tap && brew install yore
+    ```
 
 checksum:
   name_template: checksums.txt
