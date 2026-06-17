@@ -17,6 +17,8 @@ Set TypingSpeed 55ms
 #     seeded commands (no recording hook, so recall shows only this data). ---
 Hide
 Type "export XDG_DATA_HOME=$(mktemp -d) XDG_CONFIG_HOME=$(mktemp -d) HISTFILE=$(mktemp)" Enter
+Type "export YORE_NO_HINTS=1" Enter
+
 Type 'PROMPT="%F{6}~/api%f %F{2}❯%f "' Enter
 Type "RPROMPT=''" Enter
 Type "cd $(mktemp -d) && git init -q" Enter
