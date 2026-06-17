@@ -246,9 +246,10 @@ before tagging: `goreleaser check` (or a dry run with
 
 ## Contributing
 
-Issues and PRs welcome. Run `make check` (build + vet + lint + race tests) before
-submitting. New shell parsers implement `history.Source`; new shells for
-recording add an `internal/cli/shellinit/*` script.
+Issues and PRs welcome — see [CONTRIBUTING.md](CONTRIBUTING.md) for the full
+local dev + test workflow. The short version: `make check` before a PR, and
+`make dev` drops you into an isolated sandbox shell to manually try interactive
+features (onboarding, Ctrl-G, recording) without touching your real setup.
 
 ## License
 
