@@ -2,6 +2,12 @@
 
 **The commands you rely on, learned from your shell history.**
 
+yore quietly surfaces the commands you reach for most, and lets you promote the
+keepers into reusable recipes.
+
+*For developers who live in the terminal and keep re-searching or re-typing the
+same commands.*
+
 [![CI](https://github.com/Dev-Bilaspure/yore/actions/workflows/ci.yml/badge.svg)](https://github.com/Dev-Bilaspure/yore/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/Dev-Bilaspure/yore?sort=semver)](https://github.com/Dev-Bilaspure/yore/releases)
 [![Go Reference](https://pkg.go.dev/badge/github.com/Dev-Bilaspure/yore.svg)](https://pkg.go.dev/github.com/Dev-Bilaspure/yore)
