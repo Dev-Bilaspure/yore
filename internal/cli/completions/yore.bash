@@ -4,7 +4,7 @@ _yore() {
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
 
-    local subcommands="here pick save run recipes init import completion"
+    local subcommands="here pick suggest save run recipes init import completion"
     local flags="-n --top --here --ok --sort --half-life --min-count --count \
 --redact --file --shell --no-dedup -0 --null --version -h --help"
 

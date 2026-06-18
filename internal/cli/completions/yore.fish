@@ -1,9 +1,10 @@
 # fish completion for yore
-set -l subcommands here pick save run recipes init import completion
+set -l subcommands here pick suggest save run recipes init import completion
 
 # Subcommands (only as the first argument).
 complete -c yore -n '__fish_use_subcommand' -a here       -d 'recall commands in this project'
 complete -c yore -n '__fish_use_subcommand' -a pick       -d 'fuzzy-pick a command or recipe'
+complete -c yore -n '__fish_use_subcommand' -a suggest    -d 'review frequent commands, save as recipes'
 complete -c yore -n '__fish_use_subcommand' -a save       -d 'save a reusable recipe'
 complete -c yore -n '__fish_use_subcommand' -a run        -d 'run a saved recipe'
 complete -c yore -n '__fish_use_subcommand' -a recipes    -d 'list saved recipes'

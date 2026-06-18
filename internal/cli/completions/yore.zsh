@@ -5,6 +5,7 @@ _yore() {
     subcommands=(
         'here:recall commands used in the current project'
         'pick:fuzzy-pick a command or recipe'
+        'suggest:review frequent commands and save them as recipes'
         'save:save a command as a reusable recipe'
         'run:run a saved recipe'
         'recipes:list saved recipes'
