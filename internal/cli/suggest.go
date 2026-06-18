@@ -274,11 +274,11 @@ func maybeSuggestNudge(stdout, stderr io.Writer) {
 	saveSuggestState(state)
 
 	s := stderrStyles(stderr)
-	plural := ""
+	noun, verb := "command", "looks"
 	if len(cands) != 1 {
-		plural = "s"
+		noun, verb = "commands", "look"
 	}
-	fmt.Fprintf(stderr, "\nyore: %d command%s look worth keeping — run %s\n", len(cands), plural, s.key("yore suggest"))
+	fmt.Fprintf(stderr, "\nyore: %d %s %s worth keeping — run %s\n", len(cands), noun, verb, s.key("yore suggest"))
 }
 
 // collapseHome shortens an absolute path under $HOME to ~/… for display.
