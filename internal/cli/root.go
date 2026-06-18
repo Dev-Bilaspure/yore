@@ -58,6 +58,7 @@ Flags:
 
 Subcommands:
   pick                   fuzzy-pick a command or recipe (bound to Ctrl-G by init)
+  suggest                review frequently-run commands and save them as recipes
   here                   recall commands used in the current project
   save <name> -- <cmd>   save a command as a reusable recipe
   run <name>             run a saved recipe (prompts for {parameters})
@@ -103,6 +104,8 @@ func Run(args []string, stdout, stderr io.Writer) int {
 			return runRecipes(args[1:], stdout, stderr)
 		case "pick":
 			return runPick(args[1:], stdout, stderr)
+		case "suggest":
+			return runSuggest(args[1:], stdout, stderr)
 		}
 	}
 	// `yore here` is an alias for `yore --here`.
@@ -224,6 +227,7 @@ func Run(args []string, stdout, stderr io.Writer) int {
 	// Onboarding guidance (stderr, interactive-only) for the recall path.
 	if len(files) == 0 {
 		onboardingFooter(stdout, stderr, len(entries) > 0)
+		maybeSuggestNudge(stdout, stderr)
 	}
 	return 0
 }

@@ -137,6 +137,15 @@ func plainStyles() styles {
 	return styles{title: id, key: id, dim: id, ok: id}
 }
 
+// stderrStyles picks ANSI or plain decorators based on whether stderr is a
+// terminal and NO_COLOR is unset.
+func stderrStyles(stderr io.Writer) styles {
+	if isTerminal(stderr) && os.Getenv("NO_COLOR") == "" {
+		return ansiStyles()
+	}
+	return plainStyles()
+}
+
 func ansiStyles() styles {
 	wrap := func(code string) func(string) string {
 		return func(s string) string { return "\033[" + code + "m" + s + "\033[0m" }

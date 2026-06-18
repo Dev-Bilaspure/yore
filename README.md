@@ -52,7 +52,7 @@ commit, so they travel with the repo when you want them to.
 
 - [Why yore, if I already use atuin / fzf / just?](#why-yore-if-i-already-use-atuin--fzf--just)
 - [Install](#install)
-- [Use it](#use-it) · [Recall](#recall) · [Interactive pick](#interactive-pick-ctrl-g) · [Recipes](#recipes--promote-what-you-rely-on)
+- [Use it](#use-it) · [Recall](#recall) · [Interactive pick](#interactive-pick-ctrl-g) · [Recipes](#recipes--promote-what-you-rely-on) · [Suggestions](#suggestions--let-yore-promote-for-you)
 - [How it works](#how-it-works)
 - [Privacy](#privacy)
 - [Commands](#commands)
@@ -178,6 +178,20 @@ build, test, and deploy it.
 
 > **Tip:** quote `'{placeholders}'` when saving from the shell so it doesn't
 > expand the braces.
+
+### Suggestions — let yore promote for you
+
+You don't have to remember to save anything. As you work, yore notices the
+commands you run repeatedly and offers to turn them into recipes — parameters
+and all, inferred from how you actually used them:
+
+```sh
+yore suggest
+```
+
+Each candidate comes with the evidence behind its blanks (`{env} = staging, prod`),
+so the inference is legible, not magic. Save it, rename it, or dismiss it —
+dismissed patterns never come back.
 
 ## How it works
 
