@@ -120,14 +120,54 @@ func got1(t *testing.T) pattern.Candidate {
 func TestSuggestStateRoundTrip(t *testing.T) {
 	withTempData(t)
 	s := loadSuggestState()
-	if s.Muted || len(s.Dismissed) != 0 {
+	if s.Muted || len(s.Dismissed) != 0 || len(s.Skipped) != 0 {
 		t.Fatal("fresh state should be empty")
 	}
 	s.Dismissed["k"] = true
+	s.Skipped["sk"] = 6
 	s.Muted = true
 	saveSuggestState(s)
 	got := loadSuggestState()
-	if !got.Muted || !got.Dismissed["k"] {
+	if !got.Muted || !got.Dismissed["k"] || got.Skipped["sk"] != 6 {
 		t.Errorf("state did not round-trip: %+v", got)
+	}
+}
+
+// Skipping snoozes a pattern: it stays hidden until the command's usage roughly
+// doubles, at which point it has re-earned a suggestion and reappears.
+func TestSkipSnoozeHidesUntilUsageDoubles(t *testing.T) {
+	withTempData(t)
+	st, _ := store.Default()
+	now := time.Now()
+	add := func(envs []string, base int) {
+		for i, env := range envs {
+			_ = st.Append(store.Event{
+				Time:    now.Add(time.Duration(base+i) * time.Second),
+				Command: "./deploy.sh --env " + env,
+				Dir:     "/proj", Exit: 0, Shell: "zsh",
+			})
+		}
+	}
+	add([]string{"staging", "prod", "staging", "prod", "dev", "qa"}, 0) // 6 runs
+
+	got := suggestionCandidates(3, false)
+	if len(got) != 1 {
+		t.Fatalf("expected one candidate, got %+v", got)
+	}
+	key, count := got[0].Key, got[0].Count // count == 6
+
+	// Skip it → snoozed at the current count → hidden.
+	s := loadSuggestState()
+	s.Skipped[key] = count
+	saveSuggestState(s)
+	if c := suggestionCandidates(3, false); len(c) != 0 {
+		t.Fatalf("snoozed candidate should be hidden, got %+v", c)
+	}
+
+	// Use it enough more that usage doubles → it resurfaces.
+	add([]string{"a", "b", "c", "d", "e", "f"}, 100)
+	got2 := suggestionCandidates(3, false)
+	if len(got2) != 1 || got2[0].Count < count*2 {
+		t.Fatalf("doubled-usage candidate should resurface, got %+v", got2)
 	}
 }
