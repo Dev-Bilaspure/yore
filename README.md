@@ -190,8 +190,11 @@ yore suggest
 ```
 
 Each candidate comes with the evidence behind its blanks (`{env} = staging, prod`),
-so the inference is legible, not magic. Save it, rename it, or dismiss it —
-dismissed patterns never come back.
+so the inference is legible, not magic. For each one you can **save** it (or save
+to the project), **never** suggest it again, or **skip for now** — a skipped
+pattern is snoozed and only resurfaces if you start running it a lot more. Every
+choice is saved the moment you make it, so quitting or Ctrl+C never loses your
+decisions.
 
 ## How it works
 

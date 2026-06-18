@@ -22,7 +22,8 @@ const nudgeInterval = 20 * time.Hour
 // suggestState persists the user's decisions so a dismissed pattern never
 // reappears and the nudge doesn't nag.
 type suggestState struct {
-	Dismissed map[string]bool `json:"dismissed"`
+	Dismissed map[string]bool `json:"dismissed"` // "never" — permanent
+	Skipped   map[string]int  `json:"skipped"`   // "skip"  — key -> usage count when skipped (snooze)
 	Muted     bool            `json:"muted"`
 	LastNudge time.Time       `json:"last_nudge"`
 }
@@ -36,7 +37,7 @@ func suggestStatePath() (string, bool) {
 }
 
 func loadSuggestState() suggestState {
-	s := suggestState{Dismissed: map[string]bool{}}
+	s := suggestState{Dismissed: map[string]bool{}, Skipped: map[string]int{}}
 	p, ok := suggestStatePath()
 	if !ok {
 		return s
@@ -48,6 +49,9 @@ func loadSuggestState() suggestState {
 	_ = json.Unmarshal(data, &s)
 	if s.Dismissed == nil {
 		s.Dismissed = map[string]bool{}
+	}
+	if s.Skipped == nil {
+		s.Skipped = map[string]int{}
 	}
 	return s
 }
@@ -97,6 +101,11 @@ func suggestionCandidates(minCount int, includeOld bool) []pattern.Candidate {
 		if state.Dismissed[c.Key] || recipeKeys[c.Key] {
 			continue
 		}
+		// Snoozed (skipped) patterns stay hidden until usage roughly doubles
+		// since the skip, so they resurface only once they re-earn attention.
+		if n, ok := state.Skipped[c.Key]; ok && c.Count < n*2 {
+			continue
+		}
 		out = append(out, c)
 	}
 	return out
@@ -144,8 +153,10 @@ func runSuggest(args []string, stdout, stderr io.Writer) int {
 	s := stderrStyles(stderr)
 	in := bufio.NewReader(ttyReader())
 	state := loadSuggestState()
-	saved, dismissed := 0, 0
+	saved, dismissed, skipped := 0, 0, 0
 
+	// Each decision is written to disk the moment it's made, so quitting, a
+	// Ctrl+C, or a closed terminal never discards choices already made.
 	for _, c := range cands {
 		printCandidate(stderr, s, c)
 		switch d, name := askCandidate(c, in, stderr, s); d {
@@ -159,18 +170,20 @@ func runSuggest(args []string, stdout, stderr io.Writer) int {
 			}
 		case decDismiss:
 			state.Dismissed[c.Key] = true
+			saveSuggestState(state)
 			dismissed++
 			fmt.Fprintln(stderr, s.dim("  · won't suggest this again"))
 		case decSkip:
-			// leave it for next time
-		case decQuit:
+			state.Skipped[c.Key] = c.Count
 			saveSuggestState(state)
-			summary(stdout, saved, dismissed)
+			skipped++
+			fmt.Fprintln(stderr, s.dim("  · skipped for now"))
+		case decQuit:
+			summary(stdout, saved, dismissed, skipped)
 			return 0
 		}
 	}
-	saveSuggestState(state)
-	summary(stdout, saved, dismissed)
+	summary(stdout, saved, dismissed, skipped)
 	return 0
 }
 
@@ -199,8 +212,10 @@ func printCandidate(w io.Writer, s styles, c pattern.Candidate) {
 func askCandidate(c pattern.Candidate, in *bufio.Reader, w io.Writer, s styles) (decision, string) {
 	name := c.Name
 	for {
-		fmt.Fprintf(w, "\n  [%s] save as %q   [%s] save to project   [%s] rename   [%s] never   [%s] skip\n  %s ",
-			s.key("y"), name, s.key("p"), s.key("r"), s.key("n"), s.key("s"), s.dim("›"))
+		fmt.Fprintf(w, "\n  %s [%s] as %q   [%s] to project   [%s] rename\n  %s [%s] never suggest   [%s] skip for now   [%s] quit\n  %s ",
+			s.dim("save:"), s.key("y"), name, s.key("p"), s.key("r"),
+			s.dim("else:"), s.key("n"), s.key("s"), s.key("q"),
+			s.dim("›"))
 		line, err := in.ReadString('\n')
 		choice := strings.ToLower(strings.TrimSpace(line))
 		if err != nil && choice == "" { // EOF / no more input — end the session
@@ -249,11 +264,11 @@ func saveCandidate(w io.Writer, s styles, c pattern.Candidate, name string, proj
 	return true
 }
 
-func summary(w io.Writer, saved, dismissed int) {
-	if saved == 0 && dismissed == 0 {
+func summary(w io.Writer, saved, dismissed, skipped int) {
+	if saved == 0 && dismissed == 0 && skipped == 0 {
 		return
 	}
-	fmt.Fprintf(w, "\nDone — %d saved, %d dismissed.\n", saved, dismissed)
+	fmt.Fprintf(w, "\nDone — %d saved, %d dismissed, %d skipped.\n", saved, dismissed, skipped)
 }
 
 // maybeSuggestNudge prints a one-line, rate-limited hint when there are commands
